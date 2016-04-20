@@ -140,55 +140,56 @@ int CondLikeDown_Bin_SSE (TreeNode *p, int division, int chain)
     FlipCondLikeSpace (m, chain, p->index);
     
     /* find conditional likelihood pointers */
-    clL = (__m128 *) m->condLikes[m->condLikeIndex[chain][p->left->index ]];
-    clR = (__m128 *) m->condLikes[m->condLikeIndex[chain][p->right->index]];
-    clP = (__m128 *) m->condLikes[m->condLikeIndex[chain][p->index       ]];
-    
+    clL = m->condLikes[m->condLikeIndex[chain][p->left->index ]];
+    clR = m->condLikes[m->condLikeIndex[chain][p->right->index]];
+    clP = (__m256 *) m->condLikes[m->condLikeIndex[chain][p->index]];
+
     /* find transition probabilities */
-    pL = m->tiProbs[m->tiProbsIndex[chain][p->left->index ]];
-    pR = m->tiProbs[m->tiProbsIndex[chain][p->right->index]];
+    pL = (__m256 *) m->tiProbs[m->tiProbsIndex[chain][p->left->index ]];
+    pR = (__m256 *) m->tiProbs[m->tiProbsIndex[chain][p->right->index]];
 
-    tiPL = pL;
-    tiPR = pR;
+    tclL = clL;
+    tclR = clR;
     for (k=0; k<m->numGammaCats; k++)
+    {
+        for (c=0; c<m->numSSEChars; c++)
         {
-        for (c=0; c<m->numVecChars; c++)
-            {
-            m1 = _mm_load1_ps (&tiPL[0]);
-            m2 = _mm_load1_ps (&tiPR[0]);
-            m5 = _mm_mul_ps (m1, clL[0]);
-            m6 = _mm_mul_ps (m2, clR[0]);
+            m1 = _mm_set_ps (tclL[1], tclL[0], tclL[1], tclL[0]);
+            m2 = _mm_set_ps (tclR[1], tclR[0], tclR[1], tclR[0]);
+            m3 = _mm_mul_ps (m1, pL[0]);
+            m4 = _mm_mul_ps (m2, pR[0]);
 
-            m1 = _mm_load1_ps (&tiPL[1]);
-            m2 = _mm_load1_ps (&tiPR[1]);
-            m3 = _mm_mul_ps (m1, clL[1]);
-            m4 = _mm_mul_ps (m2, clR[1]);
+            m1 = _mm_set_ps (tclL[3], tclL[2], tclL[3], tclL[2]);
+            m2 = _mm_set_ps (tclR[3], tclR[2], tclR[3], tclR[2]);
+            m5 = _mm_mul_ps (m1, pL[0]);
+            m6 = _mm_mul_ps (m2, pR[0]);
 
-            m5 = _mm_add_ps (m3, m5);
-            m6 = _mm_add_ps (m4, m6);
+            m1 = _mm_hadd_ps (m3, m5);
+            m2 = _mm_hadd_ps (m4, m6);
 
-            *clP++ = _mm_mul_ps (m5, m6);
+            *clP++ = _mm_mul_ps (m1, m2);
 
-            m1 = _mm_load1_ps (&tiPL[2]);
-            m2 = _mm_load1_ps (&tiPR[2]);
-            m5 = _mm_mul_ps (m1, clL[0]);
-            m6 = _mm_mul_ps (m2, clR[0]);
+            m1 = _mm_set_ps (tclL[5], tclL[4], tclL[5], tclL[4]);
+            m2 = _mm_set_ps (tclR[5], tclR[4], tclR[5], tclR[4]);
+            m3 = _mm_mul_ps (m1, pL[0]);
+            m4 = _mm_mul_ps (m2, pR[0]);
 
-            m1 = _mm_load1_ps (&tiPL[3]);
-            m2 = _mm_load1_ps (&tiPR[3]);
-            m3 = _mm_mul_ps (m1, clL[1]);
-            m4 = _mm_mul_ps (m2, clR[1]);
+            m1 = _mm_set_ps (tclL[7], tclL[6], tclL[7], tclL[6]);
+            m2 = _mm_set_ps (tclR[7], tclR[6], tclR[7], tclR[6]);
+            m5 = _mm_mul_ps (m1, pL[0]);
+            m6 = _mm_mul_ps (m2, pR[0]);
 
-            m5 = _mm_add_ps (m3, m5);
-            m6 = _mm_add_ps (m4, m6);
-           
-            *clP++ = _mm_mul_ps (m5, m6);
-            clL += 2;
-            clR += 2;
-            }
-        tiPL += 4;
-        tiPR += 4;
+            m1 = _mm_hadd_ps (m3, m5);
+            m2 = _mm_hadd_ps (m4, m6);
+
+            *clp++ = _mm_mul_ps (m1, m2);
+
+            tclL += 8;
+            tclR += 8;
         }
+        pL++;
+        pR++;
+    }
 
     return NO_ERROR;
 }
