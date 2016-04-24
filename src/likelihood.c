@@ -142,11 +142,11 @@ int CondLikeDown_Bin_SSE (TreeNode *p, int division, int chain)
     /* find conditional likelihood pointers */
     clL = m->condLikes[m->condLikeIndex[chain][p->left->index ]];
     clR = m->condLikes[m->condLikeIndex[chain][p->right->index]];
-    clP = (__m256 *) m->condLikes[m->condLikeIndex[chain][p->index]];
+    clP = m->condLikes[m->condLikeIndex[chain][p->index]];
 
     /* find transition probabilities */
-    pL = (__m256 *) m->tiProbs[m->tiProbsIndex[chain][p->left->index ]];
-    pR = (__m256 *) m->tiProbs[m->tiProbsIndex[chain][p->right->index]];
+    pL = m->tiProbs[m->tiProbsIndex[chain][p->left->index ]];
+    pR = m->tiProbs[m->tiProbsIndex[chain][p->right->index]];
 
     tclL = clL;
     tclR = clR;
