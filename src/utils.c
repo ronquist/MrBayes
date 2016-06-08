@@ -13650,6 +13650,8 @@ MrBFlt QuantileGamma (MrBFlt x, MrBFlt alfa, MrBFlt beta)
 ---------------------------------------------------------------------------------*/
 MrBFlt RandomNumber (RandLong *seed)
 {
+    return random();
+#if 0
     RandLong    lo, hi, test;
 
     hi = (*seed) / 127773;
@@ -13660,6 +13662,7 @@ MrBFlt RandomNumber (RandLong *seed)
     else
         *seed = test + 2147483647;
     return ((MrBFlt)(*seed) / (MrBFlt)2147483647);
+#endif
 }
 
 
