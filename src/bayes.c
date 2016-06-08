@@ -193,6 +193,8 @@ int main (int argc, char *argv[])
     
     /* initialize seed using current time */
     GetTimeSeed ();
+    /* initialize random number cenerator using globalSeed */
+    srandom(globalSeed);
     
     /* Initialize the variables of the program. */
     InitializeMrBayes ();

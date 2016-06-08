@@ -6556,6 +6556,8 @@ int DoSetParm (char *parmName, char *tkn)
                     return (ERROR);
                     }
                 globalSeed = tempI;
+                /* Re-initialize the random number generator */
+                srandom(globalSeed);
                 MrBayesPrint ("%s   Setting seed to %ld\n", spacer, globalSeed);
                 expecting = Expecting(PARAMETER) | Expecting(SEMICOLON);
                 }
