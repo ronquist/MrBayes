@@ -14,6 +14,9 @@ typedef double complex MrBComplex;
 #define ComplexExponentiation(a) ((MrBFlt)cexp(a))
 #define ComplexLog(a) (clog(a))
 
+#define RealPart(a) (creal(a))
+#define ImagPart(a) (cimag(a))
+
 #else
 /* Use our own struct-based complex numbers */
 struct MrBComplex
@@ -22,6 +25,10 @@ struct MrBComplex
     MrBFlt im;
 };
 typedef struct MrBComplex MrBComplex;
+
+#define RealPart(a) (a ## .re)
+#define ImagPart(a) (a ## .im)
+
 #endif /* HAVE_COMPLEX_H */
 
 typedef struct
