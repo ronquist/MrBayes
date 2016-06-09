@@ -5260,7 +5260,7 @@ $as_echo "$as_me: WARNING: --with-readline was given, but MPI support requires
 fi
 fi
 # Checks for header files.
-for ac_header in float.h limits.h memory.h stdlib.h string.h
+for ac_header in complex.h float.h limits.h memory.h stdlib.h string.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"

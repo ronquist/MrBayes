@@ -70,6 +70,9 @@
 /* Define to 1 to support Bit Manipulation Instruction Set 2 */
 #undef HAVE_BMI2
 
+/* Define to 1 if you have the <complex.h> header file. */
+#undef HAVE_COMPLEX_H
+
 /* Define to 1 if you have the <float.h> header file. */
 #undef HAVE_FLOAT_H
 
