@@ -13650,7 +13650,7 @@ MrBFlt QuantileGamma (MrBFlt x, MrBFlt alfa, MrBFlt beta)
 ---------------------------------------------------------------------------------*/
 MrBFlt RandomNumber (RandLong *seed)
 {
-    return (MrBFlt)random() / (MrBFlt)RAND_MAX;
+    return (MrBFlt)random() / (MrBFlt)(((long)1 << 31) - 1);
 
 #if 0
     RandLong    lo, hi, test;
