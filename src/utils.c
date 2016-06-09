@@ -78,13 +78,7 @@ MrBFlt  BetaCf (MrBFlt a, MrBFlt b, MrBFlt x);
 MrBFlt  BetaQuantile (MrBFlt alpha, MrBFlt beta, MrBFlt x);
 MrBFlt  CdfBinormal (MrBFlt h1, MrBFlt h2, MrBFlt r);
 MrBFlt  CdfNormal (MrBFlt x);
-MrBComplex Complex (MrBFlt a, MrBFlt b);
-MrBFlt  ComplexAbsoluteValue (MrBComplex a);
-MrBComplex ComplexAddition (MrBComplex a, MrBComplex b);
-MrBComplex ComplexConjugate (MrBComplex a);
-MrBComplex ComplexDivision (MrBComplex a, MrBComplex b);
 void    ComplexDivision2 (MrBFlt ar, MrBFlt ai, MrBFlt br, MrBFlt bi, MrBFlt *cr, MrBFlt *ci);
-MrBComplex ComplexExponentiation (MrBComplex a);
 int     ComplexInvertMatrix (int dim, MrBComplex **a, MrBFlt *dwork, int *indx, MrBComplex **aInverse, MrBComplex *col);
 MrBComplex ComplexLog (MrBComplex a);
 void    ComplexLUBackSubstitution (int dim, MrBComplex **a, int *indx, MrBComplex *b);
@@ -132,6 +126,16 @@ void    TiProbsUsingPadeApprox (int dim, MrBFlt **qMat, MrBFlt v, MrBFlt r, MrBF
 MrBFlt  QuantileLogNormal (MrBFlt prob, MrBFlt mu, MrBFlt sigma);
 int     DiscreteLogNormal (MrBFlt *rK, MrBFlt sigma, int K, int median);
 MrBFlt  LogNormalPoint (MrBFlt x, MrBFlt mu, MrBFlt sigma);
+
+#ifndef HAVE_COMPLEX_H
+/* If complex.h is present, then these are macros, defined in utils.h */
+MrBComplex Complex (MrBFlt a, MrBFlt b);
+MrBFlt  ComplexAbsoluteValue (MrBComplex a);
+MrBComplex ComplexAddition (MrBComplex a, MrBComplex b);
+MrBComplex ComplexConjugate (MrBComplex a);
+MrBComplex ComplexDivision (MrBComplex a, MrBComplex b);
+MrBComplex ComplexExponentiation (MrBComplex a);
+#endif /* !HAVE_COMPLEX_H */
 
 /* AddBitfield: Add bitfield to list of bitfields. The function uses global variable nLongsNeeded. */
 int AddBitfield (BitsLong ***list, int listLen, int *set, int setLen)
@@ -9695,6 +9699,7 @@ MrBFlt CdfNormal (MrBFlt x)
 }
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   Complex
@@ -9711,8 +9716,10 @@ MrBComplex Complex (MrBFlt a, MrBFlt b)
     
     return (c);
 }
+#endif
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   ComplexAbsoluteValue
@@ -9743,8 +9750,10 @@ MrBFlt ComplexAbsoluteValue (MrBComplex a)
 
     return (answer);
 }
+#endif
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   ComplexAddition
@@ -9761,8 +9770,10 @@ MrBComplex ComplexAddition (MrBComplex a, MrBComplex b)
     
     return (c);
 }
+#endif
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   ComplexConjugate
@@ -9779,8 +9790,10 @@ MrBComplex ComplexConjugate (MrBComplex a)
     
     return (c);
 }
+#endif
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   ComplexDivision
@@ -9810,6 +9823,7 @@ MrBComplex ComplexDivision (MrBComplex a, MrBComplex b)
     
     return (c);
 }
+#endif
 
 
 /*---------------------------------------------------------------------------------
@@ -9835,6 +9849,7 @@ void ComplexDivision2 (MrBFlt ar, MrBFlt ai, MrBFlt br, MrBFlt bi, MrBFlt *cr, M
 }
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   ComplexExponentiation
@@ -9857,6 +9872,7 @@ MrBComplex ComplexExponentiation (MrBComplex a)
 
     return (c);
 }
+#endif
 
 
 /*---------------------------------------------------------------------------------
@@ -9899,11 +9915,12 @@ int ComplexInvertMatrix (int dim, MrBComplex **a, MrBFlt *dwork, int *indx, MrBC
 }
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
-|   ComplexExponentiation
+|   ComplexLog
 |
-|   Returns the complex exponential of a complex number.
+|   Returns the complex logarithm of a complex number.
 |
 ---------------------------------------------------------------------------------*/
 MrBComplex ComplexLog (MrBComplex a)
@@ -9922,6 +9939,7 @@ MrBComplex ComplexLog (MrBComplex a)
         
     return (c);
 }
+#endif
 
 
 /*---------------------------------------------------------------------------------

@@ -1,12 +1,28 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
+#ifdef HAVE_COMPLEX_H
+/* Use real (no pun intended) complex numbers */
+#include <complex.h>
+typedef double complex MrBComplex;
+
+#define Complex(a, b) ((a) + (b) * I)
+#define ComplexAbsoluteValue(a) ((MrBFlt)cabs(a))
+#define ComplexAddition(a, b) ((a) + (b))
+#define ComplexConjugate(a) (conj(a))
+#define ComplexDivision(a, b) ((a) / (b))
+#define ComplexExponentiation(a) ((MrBFlt)cexp(a))
+#define ComplexLog(a) (clog(a))
+
+#else
+/* Use our own struct-based complex numbers */
 struct MrBComplex
 {
     MrBFlt re;
     MrBFlt im;
 };
 typedef struct MrBComplex MrBComplex;
+#endif /* HAVE_COMPLEX_H */
 
 typedef struct
     {
