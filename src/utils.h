@@ -36,8 +36,8 @@ typedef struct MrBComplex MrBComplex;
 /* These are currently not used within !HAVE_COMPLEX_H bits of code,
 only in code that compiles regardless of HAVE_COMPLEX_H is defined or
 not.  Because lazy me. */
-#define RealPart(c) c ## .re
-#define ImagPart(c) c ## .im
+#define RealPart(c) c.re
+#define ImagPart(c) c.im
 
 #endif /* HAVE_COMPLEX_H */
 
