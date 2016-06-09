@@ -102,7 +102,7 @@ AS_IF([test "x$use_mpi" = "xno"],
 ]) dnl AS_IF
 
 # Checks for header files.
-AC_CHECK_HEADERS([float.h limits.h memory.h stdlib.h string.h])
+AC_CHECK_HEADERS([complex.h float.h limits.h memory.h stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
