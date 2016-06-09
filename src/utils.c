@@ -83,9 +83,6 @@ int     ComplexInvertMatrix (int dim, MrBComplex **a, MrBFlt *dwork, int *indx, 
 MrBComplex ComplexLog (MrBComplex a);
 void    ComplexLUBackSubstitution (int dim, MrBComplex **a, int *indx, MrBComplex *b);
 int     ComplexLUDecompose (int dim, MrBComplex **a, MrBFlt *vv, int *indx, MrBFlt *pd);
-MrBComplex ComplexMultiplication (MrBComplex a, MrBComplex b);
-MrBComplex ComplexSquareRoot (MrBComplex a);
-MrBComplex ComplexSubtraction (MrBComplex a, MrBComplex b);
 int     ComputeEigenSystem (int dim, MrBFlt **a, MrBFlt *v, MrBFlt *vi, MrBFlt **u, int *iwork, MrBFlt *dwork);
 void    ComputeLandU (int dim, MrBFlt **aMat, MrBFlt **lMat, MrBFlt **uMat);
 void    ComputeMatrixExponential (int dim, MrBFlt **a, int qValue, MrBFlt **f);
@@ -113,7 +110,6 @@ void    PrintComplexVector (int dim, MrBComplex *vec);
 void    PrintSquareComplexMatrix (int dim, MrBComplex **m);
 void    PrintSquareDoubleMatrix (int dim, MrBFlt **matrix);
 void    PrintSquareIntegerMatrix (int dim, int **matrix);
-MrBComplex ProductOfRealAndComplex (MrBFlt a, MrBComplex b);
 MrBFlt  RndGamma (MrBFlt s, RandLong *seed);
 MrBFlt  RndGamma1 (MrBFlt s, RandLong *seed);
 MrBFlt  RndGamma2 (MrBFlt s, RandLong *seed);
@@ -135,6 +131,10 @@ MrBComplex ComplexAddition (MrBComplex a, MrBComplex b);
 MrBComplex ComplexConjugate (MrBComplex a);
 MrBComplex ComplexDivision (MrBComplex a, MrBComplex b);
 MrBComplex ComplexExponentiation (MrBComplex a);
+MrBComplex ProductOfRealAndComplex (MrBFlt a, MrBComplex b);
+MrBComplex ComplexMultiplication (MrBComplex a, MrBComplex b);
+MrBComplex ComplexSquareRoot (MrBComplex a);
+MrBComplex ComplexSubtraction (MrBComplex a, MrBComplex b);
 #endif /* !HAVE_COMPLEX_H */
 
 /* AddBitfield: Add bitfield to list of bitfields. The function uses global variable nLongsNeeded. */
@@ -9965,7 +9965,7 @@ void ComplexLUBackSubstitution (int dim, MrBComplex **a, int *indx, MrBComplex *
             for (j = ii; j <= i - 1; j++)
                 sum = ComplexSubtraction (sum, ComplexMultiplication (a[i][j], b[j]));
             } 
-        else if (AreDoublesEqual(sum.re,0.0,ETA)==NO || AreDoublesEqual(sum.im, 0.0, ETA)==NO) /* 2x != 0.0 */
+        else if (AreDoublesEqual(RealPart(sum),0.0,ETA)==NO || AreDoublesEqual(ImagPart(sum), 0.0, ETA)==NO) /* 2x != 0.0 */
             ii = i;
         b[i] = sum;
         }
@@ -10056,7 +10056,7 @@ int ComplexLUDecompose (int dim, MrBComplex **a, MrBFlt *vv, int *indx, MrBFlt *
             vv[imax] = vv[j];
             }
         indx[j] = imax;
-        if (AreDoublesEqual(a[j][j].re, 0.0, ETA)==YES && AreDoublesEqual(a[j][j].im, 0.0, ETA)==YES) /* 2x == 0.0 */
+        if (AreDoublesEqual(RealPart(a[j][j]), 0.0, ETA)==YES && AreDoublesEqual(ImagPart(a[j][j]), 0.0, ETA)==YES) /* 2x == 0.0 */
             a[j][j] = Complex (1.0e-20, 1.0e-20);
         if (j != dim - 1)
             {
@@ -10073,6 +10073,7 @@ int ComplexLUDecompose (int dim, MrBComplex **a, MrBFlt *vv, int *indx, MrBFlt *
 }
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   ComplexMultiplication
@@ -10089,8 +10090,10 @@ MrBComplex ComplexMultiplication (MrBComplex a, MrBComplex b)
     
     return (c);
 }
+#endif
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   ComplexSquareRoot
@@ -10136,8 +10139,10 @@ MrBComplex ComplexSquareRoot (MrBComplex a)
         return (c);
         }
 }
+#endif
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   ComplexSubtraction
@@ -10154,6 +10159,7 @@ MrBComplex ComplexSubtraction (MrBComplex a, MrBComplex b)
     
     return (c);
 }
+#endif
 
 
 /*---------------------------------------------------------------------------------
@@ -10322,8 +10328,12 @@ void CopyComplexMatrices (int dim, MrBComplex **from, MrBComplex **to)
         {
         for (j=0; j<dim; j++) 
             {
+#ifdef HAVE_COMPLEX_H
+            to = from;
+#else
             to[i][j].re = from[i][j].re;
             to[i][j].im = from[i][j].im;
+#endif
             }
         }
 }
@@ -11130,24 +11140,36 @@ int GetEigens (int dim, MrBFlt **q, MrBFlt *eigenValues, MrBFlt *eigvalsImag, Mr
                 { 
                 for (j=0; j<dim; j++)
                     {
+#ifdef HAVE_COMPLEX_H
+                    Ceigvecs[j][i] = eigvecs[j][i] + 0*I;
+#else
                     Ceigvecs[j][i].re = eigvecs[j][i];
                     Ceigvecs[j][i].im = 0.0;
+#endif
                     }
                 }
             else if (eigvalsImag[i] > 0)
                 { 
                 for (j=0; j<dim; j++)
                     {
+#ifdef HAVE_COMPLEX_H
+                    Ceigvecs[j][i] = eigvecs[j][i] + eigvecs[j][i + 1]*I;
+#else
                     Ceigvecs[j][i].re = eigvecs[j][i];
                     Ceigvecs[j][i].im = eigvecs[j][i + 1];
+#endif
                     }
                 }
             else if (eigvalsImag[i] < 0)
                 { 
                 for (j=0; j<dim; j++)
                     {
+#ifdef HAVE_COMPLEX_H
+                    Ceigvecs[j][i] = eigvecs[j][i-1] - eigvecs[j][i]*I;
+#else
                     Ceigvecs[j][i].re =  eigvecs[j][i-1];
                     Ceigvecs[j][i].im = -eigvecs[j][i];
+#endif
                     }
                 }
             }
@@ -13450,11 +13472,11 @@ void PrintComplexVector (int dim, MrBComplex *vec)
     MrBayesPrint ("{");
     for (i = 0; i < (dim - 1); i++) 
         {
-        MrBayesPrint ("%lf + %lfi, ", vec[i].re, vec[i].im);
+        MrBayesPrint ("%lf + %lfi, ", RealPart(vec[i]), ImagPart(vec[i]));
         if (i == 1) 
             MrBayesPrint("\n    ");
         }
-    MrBayesPrint ("%lf + %lfi}\n", vec[dim - 1].re, vec[dim - 1].im);
+    MrBayesPrint ("%lf + %lfi}\n", RealPart(vec[dim-1]), ImagPart(vec[dim-1]));
 }
 
 
@@ -13475,21 +13497,21 @@ void PrintSquareComplexMatrix (int dim, MrBComplex **m)
         MrBayesPrint ("{");
         for (col = 0; col < (dim - 1); col++) 
             {
-            MrBayesPrint ("%lf + %lfi, ", m[row][col].re, m[row][col].im);
+            MrBayesPrint ("%lf + %lfi, ", RealPart(m[row][col]), ImagPart(m[row][col]));
             if (col == 1) 
                 MrBayesPrint ("\n    ");
             }
         MrBayesPrint ("%lf + %lfi},\n", 
-        m[row][dim - 1].re, m[row][dim - 1].im);
+        RealPart(m[row][dim - 1]), ImagPart(m[row][dim - 1]));
         }
     MrBayesPrint ("{");
     for (col = 0; col < (dim - 1); col++) 
         {
-        MrBayesPrint ("%lf + %lfi, ", m[dim - 1][col].re, m[dim - 1][col].im);
+        MrBayesPrint ("%lf + %lfi, ", RealPart(m[dim - 1][col]), ImagPart(m[dim - 1][col]));
         if (col == 1) 
             MrBayesPrint ("\n    ");
         }
-    MrBayesPrint ("%lf + %lfi}}", m[dim - 1][dim - 1].re, m[dim - 1][dim - 1].im);
+    MrBayesPrint ("%lf + %lfi}}", RealPart(m[dim - 1][dim - 1]), ImagPart(m[dim - 1][dim - 1]));
     MrBayesPrint ("\n");
 }
 
@@ -13534,6 +13556,7 @@ void PrintSquareIntegerMatrix (int dim, int **matrix)
 }
 
 
+#ifndef HAVE_COMPLEX_H
 /*---------------------------------------------------------------------------------
 |
 |   ProductOfRealAndComplex
@@ -13550,6 +13573,7 @@ MrBComplex ProductOfRealAndComplex (MrBFlt a, MrBComplex b)
     
     return (c);
 }
+#endif
 
 
 /*---------------------------------------------------------------------------------

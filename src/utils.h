@@ -13,9 +13,16 @@ typedef double complex MrBComplex;
 #define ComplexDivision(a, b) ((a) / (b))
 #define ComplexExponentiation(a) ((MrBFlt)cexp(a))
 #define ComplexLog(a) (clog(a))
+#define ComplexMultiplication(a, b) ((a) * (b))
+#define ComplexSquareRoot(a) (csqrt(a))
+#define ComplexSubtraction(a, b) ((a) - (b))
+#define ProductOfRealAndComplex(a, b) ((a) * (b))
 
-#define RealPart(a) (creal(a))
-#define ImagPart(a) (cimag(a))
+/* These are currently not used within !HAVE_COMPLEX_H bits of code,
+only in code that compiles regardless of HAVE_COMPLEX_H is defined or
+not.  Because lazy me. */
+#define RealPart(c) creal(c)
+#define ImagPart(c) cimag(c)
 
 #else
 /* Use our own struct-based complex numbers */
@@ -26,8 +33,11 @@ struct MrBComplex
 };
 typedef struct MrBComplex MrBComplex;
 
-#define RealPart(a) (a ## .re)
-#define ImagPart(a) (a ## .im)
+/* These are currently not used within !HAVE_COMPLEX_H bits of code,
+only in code that compiles regardless of HAVE_COMPLEX_H is defined or
+not.  Because lazy me. */
+#define RealPart(c) c ## .re
+#define ImagPart(c) c ## .im
 
 #endif /* HAVE_COMPLEX_H */
 
